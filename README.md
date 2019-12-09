@@ -19,9 +19,9 @@ SMS Python QuickStart https://www.twilio.com/docs/sms/quickstart/python
 
 Register on Twilio, add funds to the wallet. Purchase a phone number, create Programmable SMS project. Account SID and Auth Token are required for this to function along with the phone number.
 
-Update `config.yml` with participants, 1-way and 2-way blocks. Edit `santa.py` with the new new `Account SID` and `auth_token` and `twilio_number`. Line `114` has the SMS message, feel free to customize as you find fit.
+Copy `config.yml.example` to `config.yml`  and update it with twilio account_sid, auth token, and phone numberparticipants, 1-way and 2-way blocks. Line `114` in `santa.py` has the SMS message, feel free to customize as you find fit.
 
-Put random name in `config.yml` >> `DONT-REPEAT` and `DONT-PAIR` if you do not want to have any blocks. i.e. `  - NoName`
+Put `[]` in `config.yml` >> `DONT-REPEAT` and `DONT-PAIR` if you do not want to have any blocks.
 
 # Running
 
@@ -33,4 +33,4 @@ Put random name in `config.yml` >> `DONT-REPEAT` and `DONT-PAIR` if you do not w
 
 # Credits
 
-This code was derived from https://github.com/underbluewaters/secret-santa and modified to work with SMS (Twilio) and added the functionality of 1-way block. 
+This code was derived from https://github.com/iHydra/SecretSantaSMS and modified to load API credentials from a config file.
