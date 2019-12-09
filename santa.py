@@ -1,14 +1,9 @@
 import yaml, re, random, sys, getopt, os
 from twilio.rest import Client
 
-account_sid = 'ABC12345'  # Twilio Account ID
-auth_token = 'abc54321'  # Twilio Auth Token
-twilio_number = '+12345678900'  # Twilio Registered Phone Number
-CONFIG_PATH = os.path.join(os.path.dirname(__file__), 'config.yml')
+CONFIG_PATH = os.path.join(os.path.dirname(__file__), "config.yml")
 
 #  Modify Line 114 to customize SMS message. Otherwise, a predefined will be sent.
-
-client = Client(account_sid, auth_token)
 
 class Person:
     def __init__(self, name, sms, invalid_matches):
@@ -37,7 +32,7 @@ def choose_receiver(giver, receivers):
     choice = random.choice(receivers)
     if choice.name in giver.invalid_matches or giver.name == choice.name:
         if len(receivers) is 1:
-            raise Exception('Only one receiver left, try again')
+            raise Exception("Only one receiver left, try again")
         return choose_receiver(giver, receivers)
     else:
         return choice
@@ -78,25 +73,30 @@ def main(argv=None):
 
         config = parse_yaml()
 
-        participants = config['PARTICIPANTS']
-        dont_pair = config['DONT-PAIR']
-        dont_repeat = config['DONT-REPEAT']
+        account_sid = config['TWILIO_ACCOUNT_SID']
+        auth_token = config['TWILIO_AUTH_TOKEN']
+        twilio_number = config['TWILIO_PHONE_NUMBER']
+        client = Client(account_sid, auth_token)
+
+        participants = config["PARTICIPANTS"]
+        dont_pair = config["DONT-PAIR"]
+        dont_repeat = config["DONT-REPEAT"]
         if len(participants) < 2:
-            raise Exception('Not enough participants specified.')
+            raise Exception("Not enough participants specified.")
 
         givers = []
         for person in participants:
-            name, sms = re.match(r'([^<]*)<([^>]*)>', person).groups()
+            name, sms = re.match(r"([^<]*)<([^>]*)>", person).groups()
             name = name.strip()
             invalid_matches = []
             for pair in dont_pair:
-                names = [n.strip() for n in pair.split(',')]
+                names = [n.strip() for n in pair.split(",")]
                 if name in names:
                     for member in names:
                         if name != member:
                             invalid_matches.append(member)
             for pair in dont_repeat:
-                pairs = [n.strip() for n in pair.split(',')]
+                pairs = [n.strip() for n in pair.split(",")]
                 if pairs[0] == name:
                     invalid_matches.append(pairs[1])
 
@@ -111,9 +111,15 @@ def main(argv=None):
         for pair in pairs:
             to = pair.giver.sms
             if send:
-                message = client.messages.create(body='\U0001F384 \U00002728Secret Santa 2018\U00002728 \U0001F384\n\n'
-                + pair.giver.name + ", your pick for this year is...\n\n" + pair.receiver.name +
-                "\n\nMinimum Spending: $75.00\nMaximum Spending: $100.00", from_=twilio_number, to=to)
+                message = client.messages.create(
+                    body="\U0001F384 \U00002728Castillo Gift Exchange 2019\U00002728 \U0001F384\n\n"
+                    + pair.giver.name
+                    + ", your pick for this year is...\n\n"
+                    + pair.receiver.name
+                    + "\n\nMaximum Spending: $10.00",
+                    from_=twilio_number,
+                    to=to,
+                )
                 print("Sent to %s at %s" % (pair.giver.name, to))
 
     except Usage as err:
